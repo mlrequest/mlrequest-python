@@ -24,6 +24,7 @@ classifier = Classifier('your-api-key')
 training_data = {features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1}
 #Learn batch
 training_data = [{features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1}, ...]
+
 r = classifier.learn(training_data=training_data, model_name='my-model', class_count=2)
 r.content #A single response or list of responses
 
@@ -31,6 +32,7 @@ r.content #A single response or list of responses
 features = {'feature1': 23.1, 'feature2': 'some-value'}
 #Predict batch
 features = [{'feature1': 23.1, 'feature2': 'some-value'}, ...]
+
 r = classifier.predict(features=features, model_name='my-model', class_count=2)
 r.predict_result #A single predicted class or a list of predicted classes
 ```
@@ -44,6 +46,7 @@ regression = Regression('your-api-key')
 training_data = {features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1.25}
 #Learn batch
 training_data = [{features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1.25}, ...]
+
 r = regression.learn(training_data=training_data, model_name='my-model')
 r.content #A single response or list of responses
 
@@ -51,6 +54,7 @@ r.content #A single response or list of responses
 features = {'feature1': 23.1, 'feature2': 'some-value'}
 #Predict batch
 features = [{'feature1': 23.1, 'feature2': 'some-value'}, ...]
+
 r = regression.predict(features=features, model_name='my-model')
 r.predict_result #A single predicted value or a list of predicted values
 ```
@@ -63,6 +67,7 @@ rl = RL('your-api-key')
 #Predict
 #note: epsilon, and action_list fields are optional - see the docs at https://docs.mlrequest.com for more information
 features = {'feature1': 23.1, 'feature2': 'some-value'}
+
 r = rl.predict(features=features, model_name='my-model', session_id='some-session-id', negative_reward=0, action_count=2)
 r.predict_result #A list of actions, ordered by rank (choose r.predict_data[0] for the best action)
 
