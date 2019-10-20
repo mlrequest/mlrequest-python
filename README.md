@@ -1,8 +1,8 @@
 # Getting started
 mlrequest-python is a Python client for the [mlrequest](https://mlrequest.com) machine learning API. The client allows you to do a few significant things with only a few lines of code.
 
-* Deploy a latency-routed model to 5 data centers around the world, providing < 60ms global response time and automatic failover. No servers required.
-* Train a model with thousands of training examples per second
+* Deploy latency-routed models to 5 data centers around the world, providing < 60ms global response time and automatic failover. No servers required.
+* Train models with thousands of training examples per second
 * Get thousands of model predictions per second
 * Create online learning models (models that update incrementally, in real-time). Choose from classification, regression, and reinforcement learning model types.
 
