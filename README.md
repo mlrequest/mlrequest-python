@@ -21,9 +21,9 @@ from mlrequest import Classifier
 classifier = Classifier('your-api-key')
 
 # Learn single
-training_data = {features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1}
+training_data = {'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1}
 # Learn batch
-training_data = [{features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1}, ...]
+training_data = [{'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1}, ...]
 
 r = classifier.learn(training_data=training_data, model_name='my-model', class_count=2)
 r.content # A single response or list of responses
@@ -43,9 +43,9 @@ from mlrequest import Regression
 regression = Regression('your-api-key')
 
 # Learn single
-training_data = {features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1.25}
+training_data = {'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1.25}
 # Learn batch
-training_data = [{features: {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1.25}, ...]
+training_data = [{'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1.25}, ...]
 
 r = regression.learn(training_data=training_data, model_name='my-model')
 r.content # A single response or list of responses
