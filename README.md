@@ -78,6 +78,9 @@ r.content # A single response
 
 ## Account
 ```python
+from mlrequest import Account
+account = Account('your-api-key')
+
 # Get account information
 r = account.get_details()
 r.content # Account info response
