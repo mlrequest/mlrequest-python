@@ -6,7 +6,7 @@ mlrequest-python is a Python client for the [mlrequest](https://mlrequest.com) m
 * Get thousands of model predictions per second
 * Create online learning models (models that update incrementally, in real-time). Choose from classification, regression, and reinforcement learning model types.
 
-You will need an API key to get started with mlrequest-python. You can obtain one for free that provides 10,000 model transactions at https://mlrequest.com/signup.html. The free plan is rate limited, for high throughput see our paid plans at https://mlrequest.com/pricing.html. Check out our [documentation](https://docs.mlrequest.com) for more information.
+You will need an API key to get started with mlrequest-python. You can obtain one for free that provides 50,000 monthly model transactions at https://mlrequest.com/signup.html. The free plan is rate limited, for high throughput see our paid plans at https://mlrequest.com/pricing.html. Check out our [documentation](https://docs.mlrequest.com) for more information.
 
 ## Install
 ```
