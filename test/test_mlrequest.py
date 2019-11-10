@@ -110,7 +110,8 @@ class TestAPI(unittest.TestCase):
         else:
             X, y = make_classification(n_samples=50, n_features=3, n_classes=3, n_informative=3, n_redundant=0,
                                        random_state=0, shuffle=False)
-            clf = RandomForestClassifier().fit(X, y)
+            clf = RandomForestClassifier()
+            clf.fit(X, y)
             skljson.to_json(clf, model_name)
 
         sklearn = SKLearn('test')
@@ -133,7 +134,8 @@ class TestAPI(unittest.TestCase):
         else:
             X, y = make_classification(n_samples=15000, n_features=10, n_classes=3, n_informative=3, n_redundant=0,
                                        random_state=0, shuffle=False)
-            clf = RandomForestClassifier().fit(X, y)
+            clf = RandomForestClassifier()
+            clf.fit(X, y)
             skljson.to_json(clf, model_name)
 
         sklearn = SKLearn('test')

@@ -1,21 +1,42 @@
 # Getting started
-mlrequest-python is a Python client for the [mlrequest](https://mlrequest.com) machine learning API. The client allows you to do a few significant things with only a few lines of code.
+mlrequest-python is a Python client for the [mlrequest](https://mlrequest.com) machine learning API. The client allows you to do a few significant things with minimal code.
 
-* Deploy latency-routed models to 5 data centers around the world, providing < 60ms global response time and automatic failover. No servers required.
-* Train models with thousands of training examples per second
+* Deploy latency-routed **scikit-learn** and **online** machine learning models to 5 data centers around the world, providing < 60ms global response time and automatic failover.
 * Get thousands of model predictions per second
-* Create online learning models (models that update incrementally, in real-time). Choose from classification, regression, and reinforcement learning model types.
+* Train online models with thousands of training examples per second
 
-You will need an API key to get started with mlrequest-python. You can obtain one for free that provides 50,000 monthly model transactions at https://mlrequest.com/signup.html. The free plan is rate limited, for high throughput see our paid plans at https://mlrequest.com/pricing.html. Check out our [documentation](https://docs.mlrequest.com) for more information.
+You will need an API key to get started with mlrequest-python. You can obtain one for free that provides 5,000 monthly model transactions at https://mlrequest.com/signup.html. The free plan is limited to the deployment of a single online learning model or scikit-learn model file less than 1 MB in size. Scikit-learn model transactions are prioritized for paid accounts, and will generally receive up to 50ms faster response time than free accounts.
+
+For more transactions, larger scikit-learn model files (up to 100 MB), more models, and faster scikit-learn response times, see our paid plans at https://mlrequest.com/pricing.html. Check out our [documentation](https://docs.mlrequest.com) for more information.
 
 ## Install
 ```
 pip install mlrequest
 ```
-## Create a Model
+
+## Scikit-Learn
+### Create and Deploy a Scikit-Learn Model
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from mlrequest import SKLearn
+
+rf_clf = RandomForestClassifier()
+rf_clf.fit(X, y)
+
+sklearn = SKLearn('your-api-key')
+sklearn.deploy('my-rf-classifier', rf_clf)
+
+#Make predictions
+pred = sklearn.predict('my-rf-classifier')
+```
+
+## Online learning
+### Create a Model
 Models are created automatically by calling one of the model endpoints below.
 
-## Classifier
+### Classifier
+Currently classification is limited to logistic regression. Email support@mlrequest.com to request other online classifier models.
 ```python
 from mlrequest import Classifier
 classifier = Classifier('your-api-key')
@@ -37,7 +58,8 @@ r = classifier.predict(features=features, model_name='my-model', class_count=2)
 r.predict_result # A single predicted class or a list of predicted classes
 ```
 
-## Regression
+### Regression
+Currently regression is limited to linear regression. Email support@mlrequest.com to request other online regression models.
 ```python
 from mlrequest import Regression
 regression = Regression('your-api-key')
@@ -59,7 +81,7 @@ r = regression.predict(features=features, model_name='my-model')
 r.predict_result # A single predicted value or a list of predicted values
 ```
 
-## Reinforcement Learning
+### Reinforcement Learning
 ```python
 from mlrequest import RL
 rl = RL('your-api-key')
