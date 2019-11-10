@@ -14,6 +14,8 @@ setuptools.setup(
      packages=setuptools.find_packages(),
      install_requires=[
           'requests-futures',
+          'requests',
+          'sklearn-json'
       ],
      classifiers=[
          "Programming Language :: Python :: 3",

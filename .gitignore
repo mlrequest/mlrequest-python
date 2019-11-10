@@ -41,3 +41,5 @@ __pycache__/
 build/
 dist/
 mlrequest.egg-info/
+test-model
+test-model-1mb
