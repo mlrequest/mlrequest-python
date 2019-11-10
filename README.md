@@ -21,11 +21,11 @@ pip install mlrequest
 from sklearn.ensemble import RandomForestClassifier
 from mlrequest import SKLearn
 
-rf_clf = RandomForestClassifier()
-rf_clf.fit(X, y)
+clf = RandomForestClassifier()
+clf.fit(X, y)
 
 sklearn = SKLearn('your-api-key')
-sklearn.deploy('my-rf-classifier', rf_clf)
+sklearn.deploy('my-rf-classifier', clf)
 
 #Make predictions
 pred = sklearn.predict('my-rf-classifier')
