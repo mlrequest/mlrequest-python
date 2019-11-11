@@ -25,10 +25,10 @@ clf = RandomForestClassifier()
 clf.fit(X, y)
 
 sklearn = SKLearn('your-api-key')
-sklearn.deploy('my-rf-classifier', clf)
+sklearn.deploy('rf-model-name', clf)
 
 #Make predictions
-pred = sklearn.predict('my-rf-classifier')
+pred = sklearn.predict('rf-model-name')
 ```
 
 ## Online learning
@@ -46,7 +46,7 @@ training_data = {'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'labe
 # Learn batch
 training_data = [{'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1}, ...]
 
-r = classifier.learn(training_data=training_data, model_name='my-model', class_count=2)
+r = classifier.learn(training_data=training_data, model_name='clf-model-name', class_count=2)
 r.content # A single response or list of responses
 
 # Predict single
@@ -54,7 +54,7 @@ features = {'feature1': 23.1, 'feature2': 'some-value'}
 # Predict batch
 features = [{'feature1': 23.1, 'feature2': 'some-value'}, ...]
 
-r = classifier.predict(features=features, model_name='my-model', class_count=2)
+r = classifier.predict(features=features, model_name='clf-model-name', class_count=2)
 r.predict_result # A single predicted class or a list of predicted classes
 ```
 
@@ -69,7 +69,7 @@ training_data = {'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'labe
 # Learn batch
 training_data = [{'features': {'feature1': 23.1, 'feature2': 'some-value'}, 'label': 1.25}, ...]
 
-r = regression.learn(training_data=training_data, model_name='my-model')
+r = regression.learn(training_data=training_data, model_name='reg-model-name')
 r.content # A single response or list of responses
 
 # Predict single
@@ -77,7 +77,7 @@ features = {'feature1': 23.1, 'feature2': 'some-value'}
 # Predict batch
 features = [{'feature1': 23.1, 'feature2': 'some-value'}, ...]
 
-r = regression.predict(features=features, model_name='my-model')
+r = regression.predict(features=features, model_name='reg-model-name')
 r.predict_result # A single predicted value or a list of predicted values
 ```
 
@@ -90,11 +90,11 @@ rl = RL('your-api-key')
 # Note: epsilon, and action_list fields are optional - see the docs at https://docs.mlrequest.com for more information
 features = {'feature1': 23.1, 'feature2': 'some-value'}
 
-r = rl.predict(features=features, model_name='my-model', session_id='some-session-id', negative_reward=0, action_count=2)
+r = rl.predict(features=features, model_name='rl-model-name', session_id='some-session-id', negative_reward=0, action_count=2)
 r.predict_result # A list of actions, ordered by rank (choose r.predict_data[0] for the best action)
 
 # Reward - important note: only the first action from predict_data should be rewarded. Other actions can be used but should not be rewarded.
-r = rl.reward(model_name=model_name, session_id='some_session', reward=1)
+r = rl.reward(model_name='rl-model-name', session_id='some-session-id', reward=1)
 r.content # A single response
 ```
 
@@ -108,6 +108,6 @@ r = account.get_details()
 r.content # Account info response
 
 # Delete a model
-r = account.delete_model(model_name='some-model')
+r = account.delete_model(model_name='some-model-name')
 r.content # Delete success response
 ```
