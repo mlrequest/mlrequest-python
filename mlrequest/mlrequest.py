@@ -18,7 +18,7 @@ class Classifier:
     def __init__(self, api_key=None):
         if not api_key:
             raise MissingAPIKey('An API Key is required. Visit https://mlrequest.com for a free or paid API Key.')
-        self.api_key = api_key
+        self.session.headers['MLREQ-API-KEY'] = api_key
 
     def predict(self, features, model_name, class_count):
         self._validate_predict_fields(features, model_name, class_count)
@@ -27,7 +27,6 @@ class Classifier:
             return self.batch_predict(features, model_name, class_count)
         else:
             payload = {
-                'api_key': self.api_key,
                 'features': features,
                 'model_name': model_name,
                 'class_count': class_count
@@ -48,7 +47,6 @@ class Classifier:
             futures = []
             feature_batch = features[i:i+self.batch_size]
             payload = {
-                'api_key': self.api_key,
                 'features': feature_batch,
                 'model_name': model_name,
                 'class_count': class_count
@@ -74,7 +72,6 @@ class Classifier:
             return self.batch_learn(training_data, model_name, class_count)
         else:
             payload = {
-                'api_key': self.api_key,
                 'features': training_data['features'],
                 'model_name': model_name,
                 'class_count': class_count,
@@ -89,7 +86,6 @@ class Classifier:
             futures = []
             training_batch = training_data[i:i+self.batch_size]
             payload = {
-                'api_key': self.api_key,
                 'training_data': training_batch,
                 'model_name': model_name,
                 'class_count': class_count,
@@ -141,7 +137,7 @@ class Regression:
     def __init__(self, api_key=None):
         if not api_key:
             raise MissingAPIKey('An API Key is required. Visit https://mlrequest.com for a free or paid API Key.')
-        self.api_key = api_key
+        self.session.headers['MLREQ-API-KEY'] = api_key
 
     def predict(self, features, model_name):
         self._validate_predict_fields(features, model_name)
@@ -150,7 +146,6 @@ class Regression:
             return self.batch_predict(features, model_name)
         else:
             payload = {
-                'api_key': self.api_key,
                 'features': features,
                 'model_name': model_name
             }
@@ -169,7 +164,6 @@ class Regression:
             futures = []
             feature_batch = features[i:i+self.batch_size]
             payload = {
-                'api_key': self.api_key,
                 'features': feature_batch,
                 'model_name': model_name
             }
@@ -192,7 +186,6 @@ class Regression:
             return self.batch_learn(training_data, model_name)
         else:
             payload = {
-                'api_key': self.api_key,
                 'features': training_data['features'],
                 'model_name': model_name,
                 'label': training_data['label']
@@ -206,7 +199,6 @@ class Regression:
             futures = []
             training_batch = training_data[i:i+self.batch_size]
             payload = {
-                'api_key': self.api_key,
                 'training_data': training_batch,
                 'model_name': model_name
             }
@@ -249,7 +241,7 @@ class RL:
     def __init__(self, api_key=None):
         if not api_key:
             raise MissingAPIKey('An API Key is required. Visit https://mlrequest.com for a free or paid API Key.')
-        self.api_key = api_key
+        self.session.headers['MLREQ-API-KEY'] = api_key
 
     def predict(self, features, model_name, session_id, negative_reward,
                 action_count, epsilon=0.2, action_list=None):
@@ -257,7 +249,6 @@ class RL:
                                       action_count, epsilon, action_list)
 
         payload = {
-            'api_key': self.api_key,
             'features': features,
             'model_name': model_name,
             'session_id': session_id,
@@ -278,7 +269,6 @@ class RL:
         self._validate_reward_fields(model_name, session_id, reward)
 
         payload = {
-            'api_key': self.api_key,
             'model_name': model_name,
             'session_id': session_id,
             'reward': reward
@@ -333,11 +323,10 @@ class Account:
 
         if not api_key:
             raise MissingAPIKey('An API Key is required. Visit https://mlrequest.com for a free or paid API Key.')
-        self.api_key = api_key
+        self.session.headers['MLREQ-API-KEY'] = api_key
 
     def delete_model(self, model_name):
         payload = {
-            'api_key': self.api_key,
             'model_name': model_name
         }
         future = self.session.post(f'{self.base_url}/v1/model/delete', json=payload)
@@ -345,10 +334,7 @@ class Account:
         return Response({'content': response})
 
     def get_details(self):
-        payload = {
-            'api_key': self.api_key
-        }
-        future = self.session.post(f'{self.base_url}/v1/account', json=payload)
+        future = self.session.get(f'{self.base_url}/v1/account')
         response = json.loads(future.result().content)
         return Response({'content': response})
 
@@ -361,14 +347,13 @@ class SKLearn:
 
         if not api_key:
             raise MissingAPIKey('An API Key is required. Visit https://mlrequest.com for a free or paid API Key.')
-        self.api_key = api_key
+        self.headers = {'MLREQ-API-KEY': api_key}
 
     def deploy(self, model_name, sklearn_model):
         payload = {
-            'model_name': model_name,
-            'api_key': self.api_key
+            'model_name': model_name
         }
-        r = requests.post(f'{self.base_url}/v1/sklearn/deploy/url', json=payload)
+        r = requests.post(f'{self.base_url}/v1/sklearn/deploy/url', json=payload, headers=self.headers)
         response = r.json()
         url = response['url']
         tier = response['tier']
@@ -389,13 +374,12 @@ class SKLearn:
         self._validate_predict_fields(features, model_name)
 
         payload = {
-            'api_key': self.api_key,
             'features': features,
             'model_name': model_name
         }
 
         try:
-            r = requests.post(f'{self.base_url}/v1/sklearn/predict', json=payload)
+            r = requests.post(f'{self.base_url}/v1/sklearn/predict', json=payload, headers=self.headers)
 
             response = r.json()
             if 'predict_result' in response:
