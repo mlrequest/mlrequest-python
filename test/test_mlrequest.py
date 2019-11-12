@@ -77,7 +77,7 @@ class TestAPI(unittest.TestCase):
     def test_rl_reward(self):
         rl = RL('test')
         model_name = 'python-rl-test'
-        response = rl.reward(model_name, 'some_session', 1)
+        response = rl.reward(1, model_name, 'some_session')
         self.assertEqual(response.content['message'], 'OK')
 
     def test_account_info(self):
@@ -115,7 +115,7 @@ class TestAPI(unittest.TestCase):
             skljson.to_json(clf, model_name)
 
         sklearn = SKLearn('test')
-        sklearn.deploy(model_name, clf)
+        sklearn.deploy(clf, model_name)
 
         mock_post.assert_called_once()
         mock_put.assert_called_once()
@@ -140,7 +140,7 @@ class TestAPI(unittest.TestCase):
 
         sklearn = SKLearn('test')
         with self.assertRaises(mlrequest.ModelSizeExceeded) as exception:
-            sklearn.deploy(model_name, clf)
+            sklearn.deploy(clf, model_name)
         mock_post.assert_called_once()
 
     def test_sklearn_predict(self):

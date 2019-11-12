@@ -265,7 +265,7 @@ class RL:
         else:
             return Response({'content': response})
 
-    def reward(self, model_name, session_id, reward):
+    def reward(self, reward, model_name, session_id):
         self._validate_reward_fields(model_name, session_id, reward)
 
         payload = {
@@ -349,7 +349,7 @@ class SKLearn:
             raise MissingAPIKey('An API Key is required. Visit https://mlrequest.com for a free or paid API Key.')
         self.headers = {'MLREQ-API-KEY': api_key}
 
-    def deploy(self, model_name, sklearn_model):
+    def deploy(self, sklearn_model, model_name):
         payload = {
             'model_name': model_name
         }
