@@ -25,7 +25,7 @@ clf = RandomForestClassifier()
 clf.fit(X, y)
 
 sklearn = SKLearn('your-api-key')
-sklearn.deploy('rf-model-name', clf)
+sklearn.deploy(clf, 'rf-model-name')
 
 #Make predictions
 pred = sklearn.predict('rf-model-name')
@@ -94,7 +94,7 @@ r = rl.predict(features=features, model_name='rl-model-name', session_id='some-s
 r.predict_result # A list of actions, ordered by rank (choose r.predict_data[0] for the best action)
 
 # Reward - important note: only the first action from predict_data should be rewarded. Other actions can be used but should not be rewarded.
-r = rl.reward(model_name='rl-model-name', session_id='some-session-id', reward=1)
+r = rl.reward(reward=1, model_name='rl-model-name', session_id='some-session-id')
 r.content # A single response
 ```
 
