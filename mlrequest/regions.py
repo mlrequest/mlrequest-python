@@ -1,0 +1,6 @@
+ALL = 'https://api.mlrequest.com'
+US_EAST = 'https://api.us-east.mlrequest.com'
+US_WEST = 'https://api.us-west.mlrequest.com'
+EU_CENTRAL = 'https://api.eu-central.mlrequest.com'
+AP_SOUTH = 'https://api.ap-south.mlrequest.com'
+AP_NORTHEAST = 'https://api.ap-northeast.mlrequest.com'

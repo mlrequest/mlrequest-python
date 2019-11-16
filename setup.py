@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
      name='mlrequest',
-     version='1.1.2',
+     version='1.1.3',
      author="Mathieu Rodrigue",
      author_email="support@mlrequest.com",
      description="Python client for the mlrequest machine learning API.",

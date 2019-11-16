@@ -5,7 +5,7 @@ mlrequest-python is a Python client for the [mlrequest](https://mlrequest.com) m
 * Get thousands of model predictions per second
 * Train online models with thousands of training examples per second
 
-You will need an API key to get started with mlrequest-python. You can obtain one for free that provides 5,000 monthly model transactions at https://mlrequest.com/signup.html. The free plan is limited to the deployment of a single online learning model or scikit-learn model file less than 1 MB in size. Scikit-learn model transactions are prioritized for paid accounts, and will generally receive up to 50ms faster response time than free accounts.
+You will need an API key to get started with mlrequest-python. You can obtain one for free that provides 5,000 monthly model transactions at https://mlrequest.com/signup.html. The free plan is limited to the deployment of a single online learning model or scikit-learn model file less than 1 MB in size. Scikit-learn model transactions are prioritized for paid accounts, and will generally receive up to 50ms faster response time than free accounts. Additionally, free accounts are restricted to a single data center (of your choosing) and will not benefit from latency routing.
 
 For more transactions, larger scikit-learn model files (up to 100 MB), more models, and faster scikit-learn response times, see our paid plans at https://mlrequest.com/pricing.html. Check out our [documentation](https://docs.mlrequest.com) for more information.
 
@@ -27,11 +27,36 @@ clf.fit(X, y)
 sklearn = SKLearn('your-api-key')
 sklearn.deploy(clf, 'rf-model-name')
 
-#Make predictions
-pred = sklearn.predict('rf-model-name')
+# Make predictions
+features = [[1, 2, 3]]
+pred = sklearn.predict(features, 'rf-model-name')
 ```
+### Deploy a Scikit-Learn Model to a Specific Region
+If you have a free or single region account, you will only be permitted to deploy to one data center (region) at a time. Your model will automatically failover to another region when loss of service is experienced in your deployed region. Below is an example of how to specify the region to deploy to.
 
-## Online learning
+```python
+from sklearn.ensemble import RandomForestClassifier
+from mlrequest import SKLearn
+from mlrequest import regions
+
+clf = RandomForestClassifier()
+clf.fit(X, y)
+
+sklearn = SKLearn('your-api-key')
+sklearn.deploy(clf, 'rf-model-name', regions.US_EAST)
+
+# Make predictions
+features = [[1, 2, 3]]
+pred = sklearn.predict(features, 'rf-model-name', regions.US_EAST)
+```
+Use any of the following regions.
+* `regions.US_WEST` (N. California)
+* `regions.US_EAST` (Ohio)
+* `regions.EU_CENTRAL` (Frankfurt)
+* `regions.AP_SOUTH` (Mumbai)
+* `regions.AP_NORTHEAST` (Seoul)
+
+## Online Learning
 ### Create a Model
 Models are created automatically by calling one of the model endpoints below.
 

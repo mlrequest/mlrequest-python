@@ -1,3 +1,4 @@
+from mlrequest import regions
 from requests_futures.sessions import FuturesSession
 import json
 import requests
@@ -35,9 +36,9 @@ class Classifier:
             response = json.loads(future.result().content)
 
             if ('predict_result' in response) and ('class_scores' in response):
-                return Response({'predict_result': response['predict_result'], 'class_scores': response['class_scores']})
+                return Response({'predict_result': response['predict_result'], 'class_scores': response['class_scores'], 'content': response})
             else:
-                return Response({'predict_result': response})
+                return Response({'predict_result': None, 'content': response})
 
     def batch_predict(self, features, model_name, class_count):
         class_scores = []
@@ -63,7 +64,7 @@ class Classifier:
                     predict_results += [None]
                     errors.append(response)
 
-        return Response({'predict_result': predict_results, 'class_scores': class_scores, 'errors': errors})
+        return Response({'predict_result': predict_results, 'class_scores': class_scores, 'errors': errors, 'content': response})
 
     def learn(self, training_data, model_name, class_count):
         self._validate_learn_fields(training_data, model_name, class_count)
@@ -153,9 +154,9 @@ class Regression:
 
             response = json.loads(future.result().content)
             if 'predict_result' in response:
-                return Response({'predict_result': response['predict_result']})
+                return Response({'predict_result': response['predict_result'], 'content': response})
             else:
-                return Response({'content': response})
+                return Response({'predict_result': None, 'content': response})
 
     def batch_predict(self, features, model_name):
         predict_results = []
@@ -177,7 +178,7 @@ class Regression:
                     predict_results += [None]
                     errors.append(response)
 
-        return Response({'predict_result': predict_results, 'errors': errors})
+        return Response({'predict_result': predict_results, 'errors': errors, 'content': response})
 
     def learn(self, training_data, model_name):
         self._validate_learn_fields(training_data, model_name)
@@ -261,9 +262,9 @@ class RL:
         response = json.loads(future.result().content)
 
         if 'predict_result' in response:
-            return Response({'predict_result': response['predict_result']})
+            return Response({'predict_result': response['predict_result'], 'content': response})
         else:
-            return Response({'content': response})
+            return Response({'predict_result': None, 'content': response})
 
     def reward(self, reward, model_name, session_id):
         self._validate_reward_fields(model_name, session_id, reward)
@@ -340,7 +341,6 @@ class Account:
 
 
 class SKLearn:
-    base_url = 'https://api.mlrequest.com'
 
     def __init__(self, api_key=None):
         self.log = logging.getLogger(__name__ + '.SKLearn')
@@ -349,28 +349,40 @@ class SKLearn:
             raise MissingAPIKey('An API Key is required. Visit https://mlrequest.com for a free or paid API Key.')
         self.headers = {'MLREQ-API-KEY': api_key}
 
-    def deploy(self, sklearn_model, model_name):
+    def deploy(self, sklearn_model, model_name, region_url=regions.ALL):
+
         payload = {
             'model_name': model_name
         }
-        r = requests.post(f'{self.base_url}/v1/sklearn/deploy/url', json=payload, headers=self.headers)
-        response = r.json()
-        url = response['url']
-        tier = response['tier']
+        try:
+            r = requests.post(f'{region_url}/v1/sklearn/deploy/url', json=payload, headers=self.headers)
+            response = r.json()
+        except Exception as e:
+            return Response({'content': f'There was an error getting the deploy URL {r.text}'})
 
-        model_dict = skljson.to_dict(sklearn_model)
-        model_size_bytes = sys.getsizeof(json.dumps(model_dict))
-        model_size_mb = model_size_bytes/1000**2
+        if 'url' in response and 'tier' in response:
+            url = response['url']
+            tier = response['tier']
 
-        if (model_size_mb > 1) and (tier == 0):
-            raise ModelSizeExceeded(f'Model size is {model_size_mb} MB. Upgrade to a paid plan for model sizes greater than 1 MB.')
+            model_dict = skljson.to_dict(sklearn_model)
+            model_size_bytes = sys.getsizeof(json.dumps(model_dict))
+            model_size_mb = model_size_bytes/1000**2
 
-        if model_size_mb > 100:
-            raise ModelSizeExceeded(f'Model size is {model_size_mb} MB and cannot exceed 100 MB.')
+            if (model_size_mb > 1) and (tier == 0):
+                raise ModelSizeExceeded(f'Model size is {model_size_mb} MB. Upgrade to a paid plan for model sizes greater than 1 MB.')
 
-        requests.put(url, json=model_dict, headers={'content-type': 'application/json'})
+            if model_size_mb > 100:
+                raise ModelSizeExceeded(f'Model size is {model_size_mb} MB and cannot exceed 100 MB.')
 
-    def predict(self, features, model_name):
+            requests.put(url, json=model_dict, headers={'content-type': 'application/json'})
+            return Response({'content': 'Model deployed.'})
+
+        elif 'message' in response:
+            return Response({'content': response['message']})
+        else:
+            return Response({'content': response})
+
+    def predict(self, features, model_name, region_url=regions.ALL):
         self._validate_predict_fields(features, model_name)
 
         payload = {
@@ -379,15 +391,15 @@ class SKLearn:
         }
 
         try:
-            r = requests.post(f'{self.base_url}/v1/sklearn/predict', json=payload, headers=self.headers)
-
+            r = requests.post(f'{region_url}/v1/sklearn/predict', json=payload, headers=self.headers)
             response = r.json()
-            if 'predict_result' in response:
-                return Response({'predict_result': response['predict_result']})
-            else:
-                return Response({'content': response})
         except Exception as e:
-            self.log.error(f'Error getting scikit-learn prediction: {e}')
+            return f'Error getting scikit-learn prediction: {e}, {r.text}'
+
+        if 'predict_result' in response:
+            return Response({'predict_result': response['predict_result'], 'content': response})
+        else:
+            return Response({'predict_result': None, 'content': response})
 
     def _validate_predict_fields(self, features, model_name):
         if not (isinstance(features, list) and isinstance(features[0], list)):

@@ -146,6 +146,7 @@ class TestAPI(unittest.TestCase):
     def test_sklearn_predict(self):
         sklearn = SKLearn('test')
         response = sklearn.predict([[1,2,3]], 'python-classifier-test')
+        print(response)
         self.assertEqual([0], response['predict_result'])
 
     def test_sklearn_predict_bad_feature_format(self):
